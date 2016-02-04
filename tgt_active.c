@@ -111,6 +111,43 @@ static unsigned dbg_fetch_context(void)
     return TRUE;
 }
 
+static void* g_log_point = NULL;
+
+void* get_log_point(void) {return g_log_point;};
+
+void set_log_point(const char* val)
+{
+    /*because val must start begin with x can't be 0x!*/
+    g_log_point = (void*)strtoul(val+1, NULL, 16);
+
+    dbg_printf("Set current log point to %p OK, run \"b *%p\" now to take effect!\n",
+            g_log_point, g_log_point);
+}
+
+static BOOL dbg_log_param (ADDRESS64* eipAddr, ADDRESS64* espAddr)
+{
+    void* eip = memory_to_linear_addr (eipAddr);
+    void* esp = memory_to_linear_addr (espAddr);
+
+    if (eip == (void*)g_log_point)
+    {
+        int ret = 0;
+        SIZE_T sz = 0;
+        DWORD para [4];
+
+        ret = dbg_curr_process->process_io->read( dbg_curr_process->handle,
+            esp, para, sizeof(para), &sz);
+        if (ret)
+        {
+            dbg_printf ( "eip=%p, esp=%p:%08x %08x %08x %08x\n",
+                  eip, esp, para[0], para[1], para[2], para[3]);
+
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
 /***********************************************************************
  *              dbg_exception_prolog
  *
@@ -129,7 +166,23 @@ static BOOL dbg_exception_prolog(BOOL is_debug, const EXCEPTION_RECORD* rec)
     /* this will resynchronize builtin dbghelp's internal ELF module list */
     SymLoadModule(dbg_curr_process->handle, 0, 0, 0, 0, 0);
 
-    if (is_debug) break_adjust_pc(&addr, rec->ExceptionCode, dbg_curr_thread->first_chance, &is_break);
+    if (is_debug)
+    {
+        break_adjust_pc(&addr, rec->ExceptionCode, dbg_curr_thread->first_chance, &is_break);
+
+        if ( rec->ExceptionCode == STATUS_BREAKPOINT && g_log_point)
+        {
+            ADDRESS64 stack;
+            CONTEXT ctx = dbg_context;
+
+            be_cpu->get_addr(dbg_curr_thread->handle, &ctx, be_cpu_addr_stack, &stack );
+
+            if ( dbg_log_param (&addr, &stack ) )
+            {
+                return FALSE; /*if match our log point ,just return.*/
+            }
+        }
+    }
     /*
      * Do a quiet backtrace so that we have an idea of what the situation
      * is WRT the source files.

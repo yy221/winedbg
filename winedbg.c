@@ -501,6 +501,8 @@ void dbg_del_thread(struct dbg_thread* t)
     HeapFree(GetProcessHeap(), 0, t);
 }
 
+extern void set_log_point(const char* val);
+extern void* get_log_point(void);
 void dbg_set_option(const char* option, const char* val)
 {
     if (!strcasecmp(option, "module_load_mismatched"))
@@ -547,6 +549,14 @@ void dbg_set_option(const char* option, const char* val)
 
     }
 #endif
+    else if (!strcasecmp(option, "log_point"))
+    {
+        if (!val)
+            dbg_printf("Option: log_point %p\n", get_log_point());
+        else
+            set_log_point(val);
+
+    }
     else dbg_printf("Unknown option '%s'\n", option);
 }
 
