@@ -148,6 +148,7 @@ static BOOL dbg_log_param (ADDRESS64* eipAddr, ADDRESS64* espAddr)
 
     return FALSE;
 }
+
 /***********************************************************************
  *              dbg_exception_prolog
  *
@@ -183,6 +184,7 @@ static BOOL dbg_exception_prolog(BOOL is_debug, const EXCEPTION_RECORD* rec)
             }
         }
     }
+
     /*
      * Do a quiet backtrace so that we have an idea of what the situation
      * is WRT the source files.
