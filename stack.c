@@ -231,6 +231,13 @@ unsigned stack_fetch_frames(const CONTEXT* _ctx)
             (nf == 0 ||
              (dbg_curr_thread->frames[nf - 1].is_ctx_valid &&
               memcmp(&dbg_curr_thread->frames[nf - 1].context, &ctx, sizeof(ctx))));
+        /*remove duplicate __clone+0x5d() in libc.so*/
+        if (nf > 0)
+        {
+            if (dbg_curr_thread->frames[nf-1].linear_pc == dbg_curr_thread->frames[nf].linear_pc)
+                break;
+        }
+
         nf++;
         /* bail if:
          * - we've (probably) gotten ourselves into an infinite loop,
