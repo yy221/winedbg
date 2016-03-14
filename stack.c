@@ -234,7 +234,8 @@ unsigned stack_fetch_frames(const CONTEXT* _ctx)
         /*remove duplicate __clone+0x5d() in libc.so*/
         if (nf > 0)
         {
-            if (dbg_curr_thread->frames[nf-1].linear_pc == dbg_curr_thread->frames[nf].linear_pc)
+            if (dbg_curr_thread->frames[nf-1].linear_pc == dbg_curr_thread->frames[nf].linear_pc &&
+                dbg_curr_thread->frames[nf-1].linear_frame == dbg_curr_thread->frames[nf].linear_frame)
                 break;
         }
 
