@@ -164,6 +164,13 @@ BOOL types_store_value(struct dbg_lvalue* lvalue_to, const struct dbg_lvalue* lv
     BOOL        is_signed;
 
     if (!types_get_info(&lvalue_to->type, TI_GET_LENGTH, &size)) return FALSE;
+
+    if (0 == lvalue_to->type.module)
+    {
+        lvalue_to->cookie = DLV_TARGET;
+        lvalue_to->addr.Offset = *(DWORD64*)(lvalue_to->addr.Offset);
+    }
+
     if (sizeof(val) < size)
     {
         dbg_printf("Unsufficient size\n");

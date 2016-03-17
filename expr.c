@@ -331,6 +331,7 @@ struct dbg_lvalue expr_eval(struct expr* exp)
             dbg_printf("Unsupported cast type %u\n", exp->un.cast.cast_to.type);
             RaiseException(DEBUG_STATUS_BAD_TYPE, 0, 0, NULL);
         }
+        if (0 == rtn.type.module) break;
         for (i = 0; i < exp->un.cast.cast_to.deref_count; i++)
         {
             rtn.type = types_find_pointer(&rtn.type);
