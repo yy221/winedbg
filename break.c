@@ -729,6 +729,33 @@ static	BOOL should_stop(int bpnum)
 }
 
 /***********************************************************************
+ *           break_is_logging_breakpoint
+ *
+ * Determine if current breakpoint is a logging breakpoint whose condition is "-1" .
+ */
+BOOL break_is_logging_breakpoint(ADDRESS64* addr)
+{
+    if (dbg_curr_thread->stopped_xpoint > 0)
+    {
+        struct dbg_breakpoint* bp = &dbg_curr_process->bp[dbg_curr_thread->stopped_xpoint];
+
+        if (bp->condition != NULL)
+        {
+            struct dbg_lvalue lvalue = expr_eval(bp->condition);
+
+            if (lvalue.type.id == dbg_itype_none)
+            {
+                return 0;
+            }
+
+            return -1 == types_extract_as_integer(&lvalue);
+        }
+    }
+
+    return 0;
+}
+
+/***********************************************************************
  *           break_should_continue
  *
  * Determine if we should continue execution after a SIGTRAP signal when

@@ -67,6 +67,8 @@ void print_help(void)
             "  set <reg> = <expr>                     set *<addr> = <expr>",
             "  set !disassembly_flavor -- Set the disassembly flavor, the valid ",
             "  values are \"att\" and \"intel\", and the default value is \"att\".",
+            "  condition <bpnum> -1  Change a breakpoint to an logging breakpoint,",
+            "  it's useful to logging a specified function's call history .",
             "  pass                                   whatis",
             "  info (see 'help info' for options)",
 

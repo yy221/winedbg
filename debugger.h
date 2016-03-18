@@ -302,6 +302,7 @@ extern void             break_enable_xpoint(int num, BOOL enable);
 extern void             break_info(void);
 extern void             break_adjust_pc(ADDRESS64* addr, DWORD code, BOOL first_chance, BOOL* is_break);
 extern BOOL             break_should_continue(ADDRESS64* addr, DWORD code);
+extern BOOL             break_is_logging_breakpoint(ADDRESS64* addr);
 extern void             break_suspend_execution(void);
 extern void             break_restart_execution(int count);
 extern int              break_add_condition(int bpnum, struct expr* exp);
