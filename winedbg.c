@@ -501,8 +501,6 @@ void dbg_del_thread(struct dbg_thread* t)
     HeapFree(GetProcessHeap(), 0, t);
 }
 
-extern void set_logging_breakpoint(const char* val);
-extern void* get_logging_breakpoint(void);
 void dbg_set_option(const char* option, const char* val)
 {
     if (!strcasecmp(option, "module_load_mismatched"))
