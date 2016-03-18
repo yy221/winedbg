@@ -23,7 +23,7 @@ CC = gcc -m32
 CXX = g++ -m32
 CPPBIN = cpp
 CROSSCC = i686-w64-mingw32-gcc
-CFLAGS = -g -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0
+CFLAGS = -g -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 -DHAVE_UDIS86
 CPPFLAGS = 
 EXTRACFLAGS = -Wall -pipe -fno-strict-aliasing -Wdeclaration-after-statement -Wempty-body -Wignored-qualifiers -Wstrict-prototypes -Wtype-limits -Wunused-but-set-parameter -Wvla -Wwrite-strings -Wpointer-arith -Wlogical-op -gdwarf-2 -gstrict-dwarf -fno-omit-frame-pointer
 MSVCRTFLAGS = -fno-builtin
@@ -43,7 +43,7 @@ STRIP = strip
 LN_S = ln -s
 TOOLSDIR = $(top_builddir)
 LD = ld
-LDFLAGS = 
+LDFLAGS = -ludis86
 DLLFLAGS = -D_REENTRANT -fPIC
 PRELINK = 
 FONTFORGE = 
@@ -52,17 +52,12 @@ CONVERT =
 ICOTOOL = 
 MSGFMT = msgfmt
 CROSSTARGET = i686-w64-mingw32
-LINGUAS = ar bg ca cs da de el en en_US eo es fa fi fr he hi hr hu it ja ko lt ml nb_NO nl or pa pl pt_BR pt_PT rm ro ru sk sl sr_RS@cyrillic sr_RS@latin sv te th tr uk wa zh_CN zh_TW
 RUNTESTFLAGS = -q -P wine
 MAKEDEP = $(TOOLSDIR)/tools/makedep$(TOOLSEXT)
 WINEBUILD = $(TOOLSDIR)/tools/winebuild/winebuild$(TOOLSEXT)
 WRC = $(TOOLSDIR)/tools/wrc/wrc$(TOOLSEXT)
-LIBPORT = $(top_builddir)/libs/port/libwine_port.a
-LIBWPP = $(top_builddir)/libs/wpp/libwpp.a
-LIBWINE = -L$(top_builddir)/libs/wine -lwine
-LIBWINE_STATIC = $(top_builddir)/libs/wine/libwine_static.a
-PACKAGE_VERSION = 1.9.0
-SED_CMD = LC_ALL=C sed -e 's,@bindir\@,$(bindir),g' -e 's,@dlldir\@,$(dlldir),g' -e 's,@PACKAGE_STRING\@,Wine 1.9.0,g' -e 's,@PACKAGE_VERSION\@,1.9.0,g'
+PACKAGE_VERSION = 1.9.5
+SED_CMD = LC_ALL=C sed -e 's,@bindir\@,$(bindir),g' -e 's,@dlldir\@,$(dlldir),g' -e 's,@PACKAGE_STRING\@,Wine 1.9.5,g' -e 's,@PACKAGE_VERSION\@,1.9.5,g'
 LDRPATH_INSTALL = -Wl,--rpath,\$$ORIGIN/`$(MAKEDEP) -R ${bindir} ${libdir}` -Wl,--enable-new-dtags
 LDRPATH_LOCAL = -Wl,--rpath,\$$ORIGIN/$(top_builddir)/libs/wine
 INSTALL_PROGRAM = STRIPPROG="$(STRIP)" $(top_srcdir)/tools/install-sh $(INSTALL_PROGRAM_FLAGS)
@@ -81,6 +76,8 @@ LIBWINE_INSTALL_DEV = libwine.so
 LIBWINE_LDFLAGS = -shared -Wl,-soname,libwine.so.1 -Wl,--version-script=$(srcdir)/wine.map
 LIBWINE_DEPENDS = wine.map
 ALL_TEST_RESOURCES = advapi32_test.res 	advpack_test.res 	amstream_test.res 	apphelp_test.res 	atl_test.res 	atl100_test.res 	atl80_test.res 	avifil32_test.res 	bcrypt_test.res 	browseui_test.res 	cabinet_test.res 	combase_test.res 	comcat_test.res 	comctl32_test.res 	comdlg32_test.res 	credui_test.res 	crypt32_test.res 	cryptnet_test.res 	cryptui_test.res 	d2d1_test.res 	d3d10_test.res 	d3d10_1_test.res 	d3d10core_test.res 	d3d11_test.res 	d3d8_test.res 	d3d9_test.res 	d3dcompiler_43_test.res 	d3drm_test.res 	d3dx9_36_test.res 	d3dxof_test.res 	ddraw_test.res 	ddrawex_test.res 	devenum_test.res 	dinput_test.res 	dinput8_test.res 	dispex_test.res 	dmband_test.res 	dmcompos_test.res 	dmime_test.res 	dmloader_test.res 	dmscript_test.res 	dmstyle_test.res 	dmsynth_test.res 	dmusic_test.res 	dnsapi_test.res 	dplayx_test.res 	dpnet_test.res 	dpvoice_test.res 	dsound_test.res 	dssenh_test.res 	dswave_test.res 	dwrite_test.res 	dxdiagn_test.res 	dxgi_test.res 	explorerframe_test.res 	faultrep_test.res 	fusion_test.res 	gameux_test.res 	gdi32_test.res 	gdiplus_test.res 	hlink_test.res 	ieframe_test.res 	imagehlp_test.res 	imm32_test.res 	inetcomm_test.res 	inetmib1_test.res 	infosoft_test.res 	iphlpapi_test.res 	itss_test.res 	jscript_test.res 	kernel32_test.res 	localspl_test.res 	localui_test.res 	lz32_test.res 	mapi32_test.res 	mlang_test.res 	mmcndmgr_test.res 	mmdevapi_test.res 	mpr_test.res 	msacm32_test.res 	mscms_test.res 	mscoree_test.res 	msctf_test.res 	msdmo_test.res 	mshtml_test.res 	msi_test.res 	msrle32_test.res 	mstask_test.res 	msvcirt_test.res 	msvcp100_test.res 	msvcp110_test.res 	msvcp120_test.res 	msvcp60_test.res 	msvcp90_test.res 	msvcr100_test.res 	msvcr120_test.res 	msvcr90_test.res 	msvcrt_test.res 	msvcrtd_test.res 	msvfw32_test.res 	msxml3_test.res 	netapi32_test.res 	netcfgx_test.res 	netprofm_test.res 	ntdll_test.res 	ntdsapi_test.res 	ntprint_test.res 	odbccp32_test.res 	ole32_test.res 	oleacc_test.res 	oleaut32_test.res 	oledb32_test.res 	oledlg_test.res 	opengl32_test.res 	packager_test.res 	pdh_test.res 	propsys_test.res 	psapi_test.res 	qcap_test.res 	qedit_test.res 	qmgr_test.res 	quartz_test.res 	rasapi32_test.res 	riched20_test.res 	riched32_test.res 	rpcrt4_test.res 	rsaenh_test.res 	schannel_test.res 	schedsvc_test.res 	scrrun_test.res 	secur32_test.res 	serialui_test.res 	setupapi_test.res 	shdocvw_test.res 	shell32_test.res 	shlwapi_test.res 	slc_test.res 	snmpapi_test.res 	spoolss_test.res 	sti_test.res 	sxs_test.res 	taskschd_test.res 	twain_32_test.res 	ucrtbase_test.res 	urlmon_test.res 	user32_test.res 	userenv_test.res 	usp10_test.res 	uxtheme_test.res 	vbscript_test.res 	vcomp_test.res 	version_test.res 	wbemdisp_test.res 	wbemprox_test.res 	webservices_test.res 	wer_test.res 	wiaservc_test.res 	windowscodecs_test.res 	windowscodecsext_test.res 	winhttp_test.res 	wininet_test.res 	winmm_test.res 	winspool.drv_test.res 	wintab32_test.res 	wintrust_test.res 	wldap32_test.res 	wmiutils_test.res 	wmp_test.res 	ws2_32_test.res 	wshom.ocx_test.res 	wsnmp32_test.res 	wtsapi32_test.res 	xaudio2_7_test.res 	xinput1_3_test.res 	xmllite_test.res 	cmd.exe_test.res 	reg.exe_test.res 	regedit.exe_test.res 	services.exe_test.res 	wscript.exe_test.res 	xcopy.exe_test.res
+DISABLED_SUBDIRS = dlls/winealsa.drv 	dlls/winecoreaudio.drv 	dlls/winegstreamer 	dlls/winemac.drv 	dlls/winepulse.drv 	dlls/wineqtdecoder 	dlls/wpcap
+CONFIGURE_TARGETS = wine 	TAGS 	tags 	autom4te.cache 	config.log 	config.status 	include/config.h 	include/stamp-h 	tools/makedep
 OPENGL_LIBS = -lGL
 SOCKET_LIBS = 
 COREFOUNDATION_LIBS = 
@@ -124,12 +121,11 @@ LCMS2_LIBS =
 FREETYPE_CFLAGS = -I/usr/include/freetype2
 FREETYPE_LIBS = -L/usr/lib/i386-linux-gnu -lfreetype -lz -lpng12
 Z_LIBS = -lz
-UDIS86_LIBS = -ludis86
-GETTEXTPO_LIBS = -lgettextpo
+GETTEXTPO_LIBS = 
 PULSE_CFLAGS = -D_REENTRANT  
 PULSE_LIBS = 
-GSTREAMER_CFLAGS = -I/usr/include/gstreamer-0.10 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/libxml2
-GSTREAMER_LIBS = -pthread -lgstapp-0.10 -lgstbase-0.10 -lgstreamer-0.10 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lxml2 -lglib-2.0  
+GSTREAMER_CFLAGS = 
+GSTREAMER_LIBS = 
 ALSA_LIBS = 
 OSS4_CFLAGS = -I/usr/lib/oss/include
 CAPI20_CFLAGS = -I/usr/include/  
@@ -147,17 +143,21 @@ MPG123_CFLAGS =
 MPG123_LIBS = -lmpg123  
 KSTAT_LIBS = 
 PROCSTAT_LIBS = 
+NETAPI_CFLAGS = 
+NETAPI_LIBS = 
 EXCESS_PRECISION_CFLAGS = -fexcess-precision=standard
 DL_LIBS = -ldl
 POLL_LIBS = 
 RT_LIBS = 
 LDAP_LIBS = -lldap_r -llber
+TAGSFLAGS = --langmap='c:+.idl.l.rh,make:(Make*.in)'
+CLEAN_FILES = *.o *.a *.so *.res *.fake *.ok *.tab.[ch] *.yy.c
 
 MODULE    = winedbg.exe
 APPMODE   = -mconsole
 IMPORTS   = psapi dbghelp advapi32
 DELAYIMPORTS = comdlg32 shell32 comctl32 user32 gdi32
-EXTRALIBS = $(POLL_LIBS) $(UDIS86_LIBS)
+EXTRALIBS = $(POLL_LIBS)
 
 C_SRCS = \
 	be_arm.c \
@@ -191,6 +191,8 @@ BISON_SRCS = dbg.y
 MANPAGES = winedbg.man.in
 
 INSTALL_LIB = winedbg.exe winedbg
+
+### Dependencies (everything below this line is auto-generated; DO NOT EDIT!!)
 be_arm.o: be_arm.c
 	$(CC) -c -o $@ be_arm.c -I. -I../../include -D__WINESRC__ -D_REENTRANT -fPIC -Wall -pipe \
   -fno-strict-aliasing -Wdeclaration-after-statement -Wempty-body -Wignored-qualifiers \
@@ -750,7 +752,7 @@ winedbg.o: ../../include/config.h ../../include/wine/port.h debugger.h ../../inc
   ../../include/rpcasync.h ../../include/cguid.h ../../include/urlmon.h ../../include/servprov.h \
   ../../include/msxml.h ../../include/propidl.h ../../include/wine/list.h intvar.h be_cpu.h \
   ../../include/wine/exception.h ../../include/wine/library.h ../../include/wine/debug.h
-winedbg.res: ../../tools/wrc/wrc winedbg.rc
+winedbg.res: winedbg.rc
 	../../tools/wrc/wrc -o $@ -m32 --nostdinc -I. -I../../include -D__WINESRC__ --po-dir=../../po \
   winedbg.rc
 winedbg.res: ../../po/ar.mo ../../po/bg.mo ../../po/ca.mo ../../po/cs.mo ../../po/da.mo \
@@ -761,7 +763,9 @@ winedbg.res: ../../po/ar.mo ../../po/bg.mo ../../po/ca.mo ../../po/cs.mo ../../p
   ../../po/pt_PT.mo ../../po/rm.mo ../../po/ro.mo ../../po/ru.mo ../../po/sk.mo ../../po/sl.mo \
   ../../po/sr_RS@cyrillic.mo ../../po/sr_RS@latin.mo ../../po/sv.mo ../../po/te.mo ../../po/th.mo \
   ../../po/tr.mo ../../po/uk.mo ../../po/wa.mo ../../po/zh_CN.mo ../../po/zh_TW.mo
-rsrc.pot winedbg.res: resource.h ../../include/windef.h ../../include/winnt.h \
+winedbg.pot: winedbg.rc
+	../../tools/wrc/wrc -O pot -o $@ -m32 --nostdinc -I. -I../../include -D__WINESRC__ winedbg.rc
+winedbg.pot winedbg.res: ../../tools/wrc/wrc resource.h ../../include/windef.h ../../include/winnt.h \
   ../../include/basetsd.h ../../include/guiddef.h ../../include/winnt.rh ../../include/pshpack2.h \
   ../../include/poppack.h ../../include/pshpack8.h ../../include/pshpack4.h ../../include/winuser.h \
   ../../include/winuser.rh
@@ -825,18 +829,20 @@ debug.yy.o: ../../include/config.h debugger.h ../../include/ntstatus.h ../../inc
   ../../include/rpcdce.h ../../include/rpcdcep.h ../../include/rpcnterr.h ../../include/rpcasync.h \
   ../../include/cguid.h ../../include/urlmon.h ../../include/servprov.h ../../include/msxml.h \
   ../../include/propidl.h ../../include/wine/list.h intvar.h be_cpu.h dbg.tab.h
-rsrc.pot: ../../tools/wrc/wrc winedbg.rc
-	../../tools/wrc/wrc -O pot -o $@ -m32 --nostdinc -I. -I../../include -D__WINESRC__ winedbg.rc
 winedbg.exe.so winedbg.exe.fake: be_arm.o be_arm64.o be_i386.o be_ppc.o be_x86_64.o break.o \
   crashdlg.o db_disasm.o db_disasm64.o display.o expr.o gdbproxy.o info.o memory.o source.o stack.o \
   symbol.o tgt_active.o tgt_minidump.o tgt_module.o types.o winedbg.o dbg.tab.o debug.yy.o \
-  winedbg.res
+  winedbg.res ../../dlls/comdlg32/libcomdlg32.def ../../dlls/shell32/libshell32.def \
+  ../../dlls/comctl32/libcomctl32.def ../../dlls/user32/libuser32.def ../../dlls/gdi32/libgdi32.def \
+  ../../dlls/psapi/libpsapi.def ../../dlls/dbghelp/libdbghelp.def \
+  ../../dlls/advapi32/libadvapi32.def ../../dlls/kernel32/libkernel32.def \
+  ../../dlls/ntdll/libntdll.def ../../dlls/winecrt0/libwinecrt0.a ../../libs/port/libwine_port.a
 	../../tools/winegcc/winegcc -o $@ -B../../tools/winebuild -m32 -fasynchronous-unwind-tables \
   -mconsole be_arm.o be_arm64.o be_i386.o be_ppc.o be_x86_64.o break.o crashdlg.o db_disasm.o \
   db_disasm64.o display.o expr.o gdbproxy.o info.o memory.o source.o stack.o symbol.o tgt_active.o \
   tgt_minidump.o tgt_module.o types.o winedbg.o dbg.tab.o debug.yy.o winedbg.res -lcomdlg32 \
-  -lshell32 -lcomctl32 -luser32 -lgdi32 -lpsapi -ldbghelp -ladvapi32 -Wb,-dcomdlg32 -Wb,-dshell32 \
-  -Wb,-dcomctl32 -Wb,-duser32 -Wb,-dgdi32 -lwine ../../libs/port/libwine_port.a -ludis86 $(LDFLAGS)
+  -lshell32 -lcomctl32 -luser32 -lgdi32 -lpsapi -ldbghelp -ladvapi32 ../../libs/port/libwine_port.a \
+  -Wb,-dcomdlg32 -Wb,-dshell32 -Wb,-dcomctl32 -Wb,-duser32 -Wb,-dgdi32 $(LDFLAGS)
 all: winedbg.man winedbg.exe.so winedbg.exe.fake
 install install-lib:: winedbg.man winedbg.exe.so winedbg.exe.fake ../../tools/wineapploader
 	../../tools/install-sh -m 644 $(INSTALL_DATA_FLAGS) winedbg.man $(DESTDIR)$(mandir)/man1/winedbg.1
@@ -847,10 +853,8 @@ uninstall::
 	rm -f $(DESTDIR)$(mandir)/man1/winedbg.1 $(DESTDIR)$(dlldir)/winedbg.exe.so \
   $(DESTDIR)$(fakedlldir)/winedbg.exe $(DESTDIR)$(bindir)/winedbg
 clean::
-	rm -f dbg.tab.h dbg.tab.c debug.yy.c rsrc.pot be_arm.o be_arm64.o be_i386.o be_ppc.o be_x86_64.o \
+	rm -f winedbg.pot dbg.tab.h dbg.tab.c debug.yy.c be_arm.o be_arm64.o be_i386.o be_ppc.o be_x86_64.o \
   break.o crashdlg.o db_disasm.o db_disasm64.o display.o expr.o gdbproxy.o info.o memory.o source.o \
   stack.o symbol.o tgt_active.o tgt_minidump.o tgt_module.o types.o winedbg.o dbg.tab.o debug.yy.o \
   winedbg.res winedbg.man winedbg.exe.so winedbg.exe.fake
-depend:
-	@cd ../.. && $(MAKE) programs/winedbg/depend
-.PHONY: all install install-lib uninstall clean depend
+.PHONY: all install install-lib uninstall clean
