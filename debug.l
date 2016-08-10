@@ -182,6 +182,7 @@ STRING     \"[^\n"]+\"
 <INITIAL>enable|enabl|enab|ena		{ BEGIN(BD_CMD); return tENABLE;}
 <INITIAL>disable|disabl|disab|disa|dis  { BEGIN(BD_CMD); return tDISABLE; }
 <INITIAL>disassemble|disassembl|disassemb|disassem|disasse|disass|disas { BEGIN(NOCMD); return tDISASSEMBLE; }
+<INITIAL>vprotect|vprot { BEGIN(NOCMD); return tPROTECT; }
 <INITIAL>locally|local			{ BEGIN(LOCAL_CMD); return tLOCAL; }
 <INITIAL,LOCAL_CMD>display|displa|displ|disp	{ BEGIN(FORMAT_EXPECTED); return tDISPLAY; }
 <INFO_CMD,BD_CMD>display|displa|displ|disp|dis|di|d	{ BEGIN(NOCMD); return tDISPLAY; }

@@ -586,7 +586,6 @@ void print_bare_address(const ADDRESS64* addr)
     }
 }
 
-
 /***********************************************************************
  *           print_address_symbol
  *
@@ -640,6 +639,114 @@ BOOL memory_disasm_one_insn(ADDRESS64* addr)
     be_cpu->disasm_one_insn(addr, TRUE);
     dbg_printf("\n");
     return TRUE;
+}
+
+static void get_protect_name(DWORD protect, char* prot, int size)
+{
+    memset(prot, ' ' , size - 1);
+    prot[size - 1] = '\0';
+    if (protect & (PAGE_READONLY|PAGE_READWRITE|PAGE_EXECUTE_READ|PAGE_EXECUTE_READWRITE))
+        prot[0] = 'R';
+    if (protect & (PAGE_READWRITE|PAGE_EXECUTE_READWRITE))
+        prot[1] = 'W';
+    if (protect & (PAGE_WRITECOPY|PAGE_EXECUTE_WRITECOPY))
+        prot[1] = 'C';
+    if (protect & (PAGE_EXECUTE|PAGE_EXECUTE_READ|PAGE_EXECUTE_READWRITE))
+        prot[2] = 'X';
+}
+
+BOOL memory_protect(const struct dbg_lvalue* paddr,
+                    const struct dbg_lvalue* psize,
+                    const struct dbg_lvalue* pprotect)
+{
+    ADDRESS64 addr;
+    ADDRESS64 size;
+    ADDRESS64 protect;
+    DWORD old_protect = 0;
+    char prot[4];
+    if (!paddr || !psize || !pprotect)
+    {
+        dbg_printf("vprotect <addr> <size> <protection>\n");
+        return 0;
+    }
+    types_extract_as_address(paddr, &addr);
+    types_extract_as_address(psize, &size);
+    types_extract_as_address(pprotect, &protect);
+
+    if(VirtualProtectEx(dbg_curr_process->handle,
+             addr.Offset,
+             (DWORD)(size.Offset),
+             (DWORD)(protect.Offset), &old_protect))
+    {
+        get_protect_name(old_protect, prot, sizeof(prot));
+        dbg_printf("Old protect:%s\n", prot);
+
+        get_protect_name((DWORD)(protect.Offset), prot, sizeof(prot));
+        dbg_printf("New protect:%s\n", prot);
+
+        return TRUE;
+    }
+
+    dbg_printf("vprotect(%p,%d,0x%08x) failed\n",
+            addr.Offset, (DWORD)(size.Offset), (DWORD)(protect.Offset));
+
+    return 0;
+}
+
+BOOL memory_protect_query(const struct dbg_lvalue* paddr)
+{
+    const char* state;
+    const char* type;
+    char prot[3+1];
+    char prot_alloc[3+1];
+    ADDRESS64 addr;
+    MEMORY_BASIC_INFORMATION mbi;
+    if (!paddr)
+    {
+        return 0;
+    }
+
+    types_extract_as_address(paddr, &addr);
+    if (VirtualQueryEx(dbg_curr_process->handle,
+                addr.Offset, &mbi, sizeof(mbi)) >= sizeof(mbi))
+    {
+        dbg_printf("Address  End      State   Type    RWX  RWX(Allocation)\n");
+        switch (mbi.State)
+        {
+        case MEM_COMMIT:        state = "commit "; break;
+        case MEM_FREE:          state = "free   "; break;
+        case MEM_RESERVE:       state = "reserve"; break;
+        default:                state = "???    "; break;
+        }
+        if (mbi.State != MEM_FREE)
+        {
+            switch (mbi.Type)
+            {
+            case MEM_IMAGE:         type = "image  "; break;
+            case MEM_MAPPED:        type = "mapped "; break;
+            case MEM_PRIVATE:       type = "private"; break;
+            case 0:                 type = "       "; break;
+            default:                type = "???    "; break;
+            }
+            get_protect_name(mbi.Protect, prot, sizeof(prot));
+        }
+        else
+        {
+            type = "";
+            prot[0] = '\0';
+        }
+
+        get_protect_name(mbi.AllocationProtect, prot_alloc, sizeof(prot_alloc));
+
+        dbg_printf("%08lx %08lx %s %s %s %s\n",
+                   (DWORD_PTR)mbi.BaseAddress,
+                   (DWORD_PTR)mbi.BaseAddress + mbi.RegionSize - 1,
+                   state, type, prot, prot_alloc);
+
+        return TRUE;
+    }
+
+    return 0;
 }
 
 void memory_disassemble(const struct dbg_lvalue* xstart, 

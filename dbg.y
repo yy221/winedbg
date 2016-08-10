@@ -53,7 +53,7 @@ static void parser(const char*);
 %token tABORT tECHO
 %token tCLASS tMAPS tSTACK tSEGMENTS tSYMBOL tREGS tALLREGS tWND tLOCAL tEXCEPTION tHANDLE
 %token tPROCESS tTHREAD tEOL tEOF
-%token tFRAME tSHARE tMODULE tCOND tDISPLAY tUNDISPLAY tDISASSEMBLE
+%token tFRAME tSHARE tMODULE tCOND tDISPLAY tUNDISPLAY tDISASSEMBLE tPROTECT
 %token tSTEPI tNEXTI tFINISH tSHOW tDIR tWHATIS tSOURCE
 %token <string> tPATH tIDENTIFIER tSTRING tINTVAR
 %token <integer> tNUM tFORMAT
@@ -145,6 +145,7 @@ command:
     | run_command
     | list_command
     | disassemble_command
+    | protect_command
     | set_command
     | x_command
     | print_command     
@@ -201,6 +202,10 @@ disassemble_command:
       tDISASSEMBLE              { memory_disassemble(NULL, NULL, 10); }
     | tDISASSEMBLE expr_lvalue  { memory_disassemble(&$2, NULL, 10); }
     | tDISASSEMBLE expr_lvalue ',' expr_lvalue { memory_disassemble(&$2, &$4, 0); }
+    ;
+protect_command:
+      tPROTECT expr_lvalue { memory_protect_query(&$2); }
+    | tPROTECT expr_lvalue expr_lvalue expr_lvalue { memory_protect(&$2, &$3, &$4); }
     ;
 
 set_command:

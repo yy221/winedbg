@@ -58,19 +58,29 @@ void print_help(void)
             "  stepi [N]                              nexti [N]",
             "  x <addr>                               print <expr>",
             "  display <expr>                         undisplay <disnum>",
-            "  local display <expr>                   delete display <disnum>",                  
+            "  local display <expr>                   delete display <disnum>",
             "  enable display <disnum>                disable display <disnum>",
             "  bt [<tid>|all]                         frame <n>",
             "  up                                     down",
             "  list <lines>                           disassemble [<addr>][,<addr>]",
             "  show dir                               dir <path>",
             "  set <reg> = <expr>                     set *<addr> = <expr>",
-            "  set !disassembly_flavor -- Set the disassembly flavor, the valid ",
-            "  values are \"att\" and \"intel\", and the default value is \"att\".",
-            "  condition <bpnum> -1  Change a breakpoint to an logging breakpoint,",
-            "  it's useful to logging a specified function's call history .",
             "  pass                                   whatis",
             "  info (see 'help info' for options)",
+            "\n  set !disassembly_flavor",
+            "    set disassembly flavor, the valid values are \"att\" and \"intel\"",
+            "  condition <bpnum> -1",
+            "    change breakpoint to logging breakpoint witch log call history",
+            "  vprotect <addr> <size> <protection>",
+            "    protect page from access, useful to set page fault breakpoint",
+            "       PAGE_NOACCESS		0x01",
+            "       PAGE_READONLY		0x02",
+            "       PAGE_READWRITE		0x04",
+            "       PAGE_WRITECOPY		0x08",
+            "       PAGE_EXECUTE		0x10",
+            "       PAGE_EXECUTE_READ	0x20",
+            "       PAGE_EXECUTE_READWRITE	0x40",
+            "       PAGE_EXECUTE_WRITECOPY	0x80\n",
 
             "The 'x' command accepts repeat counts and formats (including 'i') in the",
             "same way that gdb does.\n",
@@ -971,6 +981,10 @@ void info_win32_exception(void)
         if(rec->NumberParameters == 3 && rec->ExceptionInformation[0] == CXX_FRAME_MAGIC)
             dbg_printf("C++ exception(object = 0x%08lx, type = 0x%08lx)",
                        rec->ExceptionInformation[1], rec->ExceptionInformation[2]);
+        else if(rec->NumberParameters == 4 && rec->ExceptionInformation[0] == CXX_FRAME_MAGIC)
+            dbg_printf("C++ exception(object = %p, type = %p, base = %p)",
+                       (void*)rec->ExceptionInformation[1], (void*)rec->ExceptionInformation[2],
+                       (void*)rec->ExceptionInformation[3]);
         else
             dbg_printf("C++ exception with strange parameter count %d or magic 0x%08lx",
                        rec->NumberParameters, rec->ExceptionInformation[0]);

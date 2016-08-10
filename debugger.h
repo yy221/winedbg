@@ -363,6 +363,8 @@ extern void             info_wine_dbg_channel(BOOL add, const char* chnl, const 
 extern void             info_win32_handle(HWND handle);
 
   /* memory.c */
+extern BOOL             memory_protect(const struct dbg_lvalue* xstart, const struct dbg_lvalue* xsize, const struct dbg_lvalue* protect);
+extern BOOL             memory_protect_query(const struct dbg_lvalue* addr);
 extern BOOL             memory_read_value(const struct dbg_lvalue* lvalue, DWORD size, void* result);
 extern BOOL             memory_write_value(const struct dbg_lvalue* val, DWORD size, void* value);
 extern void             memory_examine(const struct dbg_lvalue *lvalue, int count, char format);
