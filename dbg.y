@@ -51,7 +51,7 @@ static void parser(const char*);
 %token tCONT tPASS tSTEP tLIST tNEXT tQUIT tHELP tBACKTRACE tALL tINFO tUP tDOWN
 %token tENABLE tDISABLE tBREAK tHBREAK tWATCH tRWATCH tDELETE tSET tPRINT tEXAM
 %token tABORT tECHO
-%token tCLASS tMAPS tSTACK tSEGMENTS tSYMBOL tREGS tALLREGS tWND tLOCAL tEXCEPTION tHANDLE
+%token tCLASS tMAPS tSTACK tSEGMENTS tSYMBOL tREGS tALLREGS tWND tLOCAL tEXCEPTION tHANDLE tADDRESS
 %token tPROCESS tTHREAD tEOL tEOF
 %token tFRAME tSHARE tMODULE tCOND tDISPLAY tUNDISPLAY tDISASSEMBLE tPROTECT
 %token tSTEPI tNEXTI tFINISH tSHOW tDIR tWHATIS tSOURCE
@@ -298,6 +298,7 @@ info_command:
     | tINFO tMAPS expr_rvalue   { info_win32_virtual($3); }
     | tINFO tEXCEPTION          { info_win32_exception(); }
     | tINFO tHANDLE expr_rvalue { info_win32_handle((HWND)$3); }
+    | tINFO tADDRESS expr_rvalue { address_info($3); }
     ;
 
 maintenance_command:

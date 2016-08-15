@@ -361,6 +361,7 @@ extern void             info_win32_segments(DWORD start, int length);
 extern void             info_win32_exception(void);
 extern void             info_wine_dbg_channel(BOOL add, const char* chnl, const char* name);
 extern void             info_win32_handle(HWND handle);
+extern void             address_info(DWORD64 addr);
 
   /* memory.c */
 extern BOOL             memory_protect(const struct dbg_lvalue* xstart, const struct dbg_lvalue* xsize, const struct dbg_lvalue* protect);

@@ -127,6 +127,7 @@ void info_help(void)
             "  info thread          Shows all running threads",
             "  info wnd <handle>    Displays internal window state",
             "  info handle <handle> Displays handle type",
+            "  info address <addr>  Displays symbol name about a given address",
             "",
             NULL
         };

@@ -239,7 +239,8 @@ STRING     \"[^\n"]+\"
 <INFO_CMD>symbol|symbo|symb|sym         { BEGIN(ASTRING_EXPECTED); return tSYMBOL; }
 <INFO_CMD>maps|map			{ return tMAPS; }
 <INFO_CMD>window|windo|wind|win|wnd	{ return tWND; }
-<INFO_CMD>handle	{ return tHANDLE; }
+<INFO_CMD>handle	                { return tHANDLE; }
+<INFO_CMD>address|addr	                { return tADDRESS; }
 <HELP_CMD>info|inf|in                   { return tINFO; }
 <MAINT_CMD>type                         { return tTYPE; }
 

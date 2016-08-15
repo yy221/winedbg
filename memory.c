@@ -641,6 +641,17 @@ BOOL memory_disasm_one_insn(ADDRESS64* addr)
     return TRUE;
 }
 
+void address_info(DWORD64 offset)
+{
+    ADDRESS64 addr;
+    addr.Offset = offset;
+    addr.Segment = 0;
+    addr.Mode = AddrModeFlat;
+
+    print_address_symbol(&addr, TRUE);
+    dbg_printf("\n");/*force output immediately*/
+}
+
 static void get_protect_name(DWORD protect, char* prot, int size)
 {
     memset(prot, ' ' , size - 1);
