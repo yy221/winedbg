@@ -664,6 +664,7 @@ BOOL memory_protect(const struct dbg_lvalue* paddr,
     ADDRESS64 protect;
     DWORD old_protect = 0;
     char prot[4];
+    void* offset = NULL;
     if (!paddr || !psize || !pprotect)
     {
         dbg_printf("vprotect <addr> <size> <protection>\n");
@@ -673,10 +674,14 @@ BOOL memory_protect(const struct dbg_lvalue* paddr,
     types_extract_as_address(psize, &size);
     types_extract_as_address(pprotect, &protect);
 
+#if defined(__x86_64__)
+     offset = (void*)(addr.Offset);
+#else
+     offset = (void*)(DWORD)(addr.Offset);
+#endif
+
     if(VirtualProtectEx(dbg_curr_process->handle,
-             addr.Offset,
-             (DWORD)(size.Offset),
-             (DWORD)(protect.Offset), &old_protect))
+        offset, (DWORD)(size.Offset), (DWORD)(protect.Offset), &old_protect))
     {
         get_protect_name(old_protect, prot, sizeof(prot));
         dbg_printf("Old protect:%s\n", prot);
@@ -688,7 +693,7 @@ BOOL memory_protect(const struct dbg_lvalue* paddr,
     }
 
     dbg_printf("vprotect(%p,%d,0x%08x) failed\n",
-            addr.Offset, (DWORD)(size.Offset), (DWORD)(protect.Offset));
+            offset, (DWORD)(size.Offset), (DWORD)(protect.Offset));
 
     return 0;
 }
@@ -700,6 +705,7 @@ BOOL memory_protect_query(const struct dbg_lvalue* paddr)
     char prot[3+1];
     char prot_alloc[3+1];
     ADDRESS64 addr;
+    void* offset = NULL;
     MEMORY_BASIC_INFORMATION mbi;
     if (!paddr)
     {
@@ -707,8 +713,15 @@ BOOL memory_protect_query(const struct dbg_lvalue* paddr)
     }
 
     types_extract_as_address(paddr, &addr);
+
+#if defined(__x86_64__)
+     offset = (void*)(addr.Offset);
+#else
+     offset = (void*)(DWORD)(addr.Offset);
+#endif
+
     if (VirtualQueryEx(dbg_curr_process->handle,
-                addr.Offset, &mbi, sizeof(mbi)) >= sizeof(mbi))
+                offset, &mbi, sizeof(mbi)) >= sizeof(mbi))
     {
         dbg_printf("Address  End      State   Type    RWX  RWX(Allocation)\n");
         switch (mbi.State)

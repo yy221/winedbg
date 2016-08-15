@@ -1655,7 +1655,7 @@ static db_addr_t db_disasm_intel(db_addr_t addr)
 {
     int len = 0;
     ud_t ud_obj;
-    char buffer[16];
+    unsigned char buffer[16];
 
     ud_init(&ud_obj);
     ud_set_mode(&ud_obj, 64);

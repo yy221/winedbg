@@ -168,7 +168,11 @@ BOOL types_store_value(struct dbg_lvalue* lvalue_to, const struct dbg_lvalue* lv
     if (0 == lvalue_to->type.module)
     {
         lvalue_to->cookie = DLV_TARGET;
+#if defined(__x86_64__)
         lvalue_to->addr.Offset = *(DWORD64*)(lvalue_to->addr.Offset);
+#else
+        lvalue_to->addr.Offset = *(DWORD64*)(DWORD)(lvalue_to->addr.Offset);
+#endif
     }
 
     if (sizeof(val) < size)

@@ -1835,7 +1835,7 @@ static void be_i386_disasm_one_insn_intel(ADDRESS64 *addr, int display)
 {
     int len = 0;
     ud_t ud_obj;
-    char buffer[16];
+    unsigned char buffer[16];
 
     db_display = display;
 
@@ -1845,7 +1845,7 @@ static void be_i386_disasm_one_insn_intel(ADDRESS64 *addr, int display)
     ud_set_pc(&ud_obj, addr->Offset);
     ud_set_input_buffer(&ud_obj, buffer, sizeof(buffer));
 
-    dbg_read_memory(addr->Offset, buffer, sizeof(buffer));
+    dbg_read_memory((void*)(DWORD)(addr->Offset), buffer, sizeof(buffer));
 
     len = ud_disassemble(&ud_obj);
     if (!len)
