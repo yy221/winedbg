@@ -98,7 +98,7 @@ LONGLONG types_extract_as_longlong(const struct dbg_lvalue* lvalue,
                 RaiseException(DEBUG_STATUS_INTERNAL_ERROR, 0, 0, NULL);
             break;
         case btFloat:
-            RaiseException(DEBUG_STATUS_NOT_AN_INTEGER, 0, 0, NULL);
+            rtn = (LONGLONG)lvalue->addr.Offset;
         }
         if (psize) *psize = (unsigned)size;
         if (issigned) *issigned = s;
