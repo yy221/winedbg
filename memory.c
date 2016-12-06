@@ -219,21 +219,21 @@ void memory_examine(const struct dbg_lvalue *lvalue, int count, char format)
 
     case 'f': DO_DUMP(float, 2, " %.6f"); break;
     case 'F': DO_DUMP(double, 2, " %.6f"); break;
-    case 'x': DO_DUMP(int, 4, " %8.8x"); break;
+    case 'x': DO_DUMP(int, 4, " 0x%8.8x"); break;
     case 'd': DO_DUMP(unsigned int, 4, " %4.4d"); break;
-    case 'w': DO_DUMP(unsigned short, 8, " %04x"); break;
+    case 'w': DO_DUMP(unsigned short, 8, " 0x%04x"); break;
     case 'a':
         if (sizeof(DWORD_PTR) == 4)
         {
-            DO_DUMP(DWORD_PTR, 4, " %8.8lx");
+            DO_DUMP(DWORD_PTR, 4, " 0x%8.8lx");
         }
         else
         {
-            DO_DUMP(DWORD_PTR, 2, " %16.16lx");
+            DO_DUMP(DWORD_PTR, 2, " 0x%16.16lx");
         }
         break;
     case 'c': DO_DUMP2(char, 32, " %c", (_v < 0x20) ? ' ' : _v); break;
-    case 'b': DO_DUMP2(char, 16, " %02x", (_v) & 0xff); break;
+    case 'b': DO_DUMP2(char, 16, " 0x%02x", (_v) & 0xff); break;
     }
 }
 
