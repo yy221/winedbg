@@ -217,6 +217,8 @@ void memory_examine(const struct dbg_lvalue *lvalue, int count, char format)
         }
 #define DO_DUMP(_t,_l,_f) DO_DUMP2(_t,_l,_f,_v)
 
+    case 'f': DO_DUMP(float, 2, " %.6f"); break;
+    case 'F': DO_DUMP(double, 2, " %.6f"); break;
     case 'x': DO_DUMP(int, 4, " %8.8x"); break;
     case 'd': DO_DUMP(unsigned int, 4, " %4.4d"); break;
     case 'w': DO_DUMP(unsigned short, 8, " %04x"); break;
