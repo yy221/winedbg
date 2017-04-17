@@ -633,6 +633,15 @@ struct dbg_lvalue expr_eval(struct expr* exp)
             rtn = exp1;
             if (exp1.cookie == DLV_TARGET)
                 dbg_read_memory(memory_to_linear_addr(&exp1.addr), &rtn.addr.Offset, sizeof(rtn.addr.Offset));
+            else
+            {
+                rtn.cookie = DLV_TARGET;
+#if defined(__x86_64__)
+                rtn.addr.Offset = *(DWORD64*)(rtn.addr.Offset);
+#else
+                rtn.addr.Offset = *(DWORD64*)(DWORD)(rtn.addr.Offset);
+            }
+#endif
             break;
 	case EXP_OP_ADDR:
             /* only do it on linear addresses */

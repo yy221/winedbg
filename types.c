@@ -165,7 +165,7 @@ BOOL types_store_value(struct dbg_lvalue* lvalue_to, const struct dbg_lvalue* lv
 
     if (!types_get_info(&lvalue_to->type, TI_GET_LENGTH, &size)) return FALSE;
 
-    if (0 == lvalue_to->type.module)
+    if (0)
     {
         lvalue_to->cookie = DLV_TARGET;
 #if defined(__x86_64__)
