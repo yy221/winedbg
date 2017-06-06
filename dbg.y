@@ -51,14 +51,15 @@ static void parser(const char*);
 %token tCONT tPASS tSTEP tLIST tNEXT tQUIT tHELP tBACKTRACE tALL tINFO tUP tDOWN
 %token tENABLE tDISABLE tBREAK tHBREAK tWATCH tRWATCH tDELETE tSET tPRINT tEXAM
 %token tABORT tECHO
-%token tCLASS tMAPS tSTACK tSEGMENTS tSYMBOL tREGS tALLREGS tWND tLOCAL tEXCEPTION tHANDLE tADDRESS
+%token tCLASS tMAPS tSTACK tSEGMENTS tSYMBOL tREGS tALLREGS tWND tLOCAL tEXCEPTION
 %token tPROCESS tTHREAD tEOL tEOF
-%token tFRAME tSHARE tMODULE tCOND tDISPLAY tUNDISPLAY tDISASSEMBLE tPROTECT
+%token tFRAME tSHARE tMODULE tCOND tDISPLAY tUNDISPLAY tDISASSEMBLE
 %token tSTEPI tNEXTI tFINISH tSHOW tDIR tWHATIS tSOURCE
 %token <string> tPATH tIDENTIFIER tSTRING tINTVAR
 %token <integer> tNUM tFORMAT
 %token tSYMBOLFILE tRUN tATTACH tDETACH tKILL tMAINTENANCE tTYPE tMINIDUMP
 %token tNOPROCESS
+%token tHANDLE tADDRESS tVPROTECT
 
 %token tCHAR tSHORT tINT tLONG tFLOAT tDOUBLE tUNSIGNED tSIGNED
 %token tSTRUCT tUNION tENUM
@@ -145,7 +146,6 @@ command:
     | run_command
     | list_command
     | disassemble_command
-    | protect_command
     | set_command
     | x_command
     | print_command     
@@ -155,6 +155,7 @@ command:
     | info_command
     | maintenance_command
     | noprocess_state
+    | vprotect_command
     ;
 
 pathname:
@@ -202,10 +203,6 @@ disassemble_command:
       tDISASSEMBLE              { memory_disassemble(NULL, NULL, 10); }
     | tDISASSEMBLE expr_lvalue  { memory_disassemble(&$2, NULL, 10); }
     | tDISASSEMBLE expr_lvalue ',' expr_lvalue { memory_disassemble(&$2, &$4, 0); }
-    ;
-protect_command:
-      tPROTECT expr_lvalue { memory_protect_query(&$2); }
-    | tPROTECT expr_lvalue expr_lvalue expr_lvalue { memory_protect(&$2, &$3, &$4); }
     ;
 
 set_command:
@@ -311,6 +308,11 @@ noprocess_state:
       tNOPROCESS                 {} /* <CR> shall not barf anything */
     | tNOPROCESS tBACKTRACE tALL { stack_backtrace(-1); } /* can backtrace all threads with no attached process */
     | tNOPROCESS tSTRING         { dbg_printf("No process loaded, cannot execute '%s'\n", $2); }
+    ;
+
+vprotect_command:
+      tVPROTECT expr_lvalue { memory_protect_query(&$2); }
+    | tVPROTECT expr_lvalue expr_lvalue expr_lvalue { memory_protect(&$2, &$3, &$4); }
     ;
 
 type_expr:

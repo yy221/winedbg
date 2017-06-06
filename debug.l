@@ -174,6 +174,7 @@ STRING     \"[^\n"]+\"
 <ASTRING_EXPECTED>[^\n]+                { char* p = yytext; while (*p == ' ' || *p == '\t') p++;
                                           dbg_lval.string = lexeme_alloc(p); return tSTRING; }
 
+<INITIAL>vprotect { BEGIN(NOCMD); return tVPROTECT; }
 <INITIAL,NOPROCESS>info|inf|in		{ BEGIN(INFO_CMD); return tINFO; }
 <INITIAL>up				{ BEGIN(NOCMD); return tUP; }
 <INITIAL>down|dow|do			{ BEGIN(NOCMD); return tDOWN; }
@@ -182,7 +183,6 @@ STRING     \"[^\n"]+\"
 <INITIAL>enable|enabl|enab|ena		{ BEGIN(BD_CMD); return tENABLE;}
 <INITIAL>disable|disabl|disab|disa|dis  { BEGIN(BD_CMD); return tDISABLE; }
 <INITIAL>disassemble|disassembl|disassemb|disassem|disasse|disass|disas { BEGIN(NOCMD); return tDISASSEMBLE; }
-<INITIAL>vprotect|vprot { BEGIN(NOCMD); return tPROTECT; }
 <INITIAL>locally|local			{ BEGIN(LOCAL_CMD); return tLOCAL; }
 <INITIAL,LOCAL_CMD>display|displa|displ|disp	{ BEGIN(FORMAT_EXPECTED); return tDISPLAY; }
 <INFO_CMD,BD_CMD>display|displa|displ|disp|dis|di|d	{ BEGIN(NOCMD); return tDISPLAY; }
@@ -240,7 +240,7 @@ STRING     \"[^\n"]+\"
 <INFO_CMD>maps|map			{ return tMAPS; }
 <INFO_CMD>window|windo|wind|win|wnd	{ return tWND; }
 <INFO_CMD>handle	                { return tHANDLE; }
-<INFO_CMD>address|addr	                { return tADDRESS; }
+<INFO_CMD>address	                { return tADDRESS; }
 <HELP_CMD>info|inf|in                   { return tINFO; }
 <MAINT_CMD>type                         { return tTYPE; }
 
